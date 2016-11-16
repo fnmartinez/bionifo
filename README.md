@@ -1,4 +1,4 @@
-# Charcot - Mraie - Tooth disease gene analysis
+# Charcot - Marie - Tooth disease gene analysis
 ## GJB1 analysis
 
 ### 
