@@ -55,22 +55,16 @@ my $searchio = new Bio::SearchIO (-format => 'blast',
 my $seqOut = Bio::SeqIO->new(-file => '>' . $output_file,
 			                 -format => $output_format);
 
-while (my $result = $searchio->next_result()) {
-	$result->database_name;
-	
-	while (my $hit = $result->next_hit) {
-		
-		my $acc = $hit->accession();
-		
+while (my $result = $searchio->next_result()) {	
+	while (my $hit = $result->next_hit) {		
+		my $acc = $hit->accession();		
 		my $str = $hit->description();
-
-		if(index($str, $pattern) != -1){
-			
-			print "HIT \n";
+		if(index($str, $pattern) != -1){			
+			print "HIT", "\n";
 			while ( (my $khit, my $vhit) = each %{$hit}) { 
 		 		print "$khit => $vhit \n"; 
 			}
-			print "HSP \n";
+			print "HSP", "\n";
 			while(my $hsp = $hit->next_hsp()) {
 				while ( (my $khsp,my $vhsp) = each %{$hsp}) {
 				    if ($khsp eq "EVALUE") {   
@@ -79,7 +73,6 @@ while (my $result = $searchio->next_result()) {
      			}
 			}
 			print "\n";
-
 			my $gb = Bio::DB::GenBank->new(-retrievaltype => 'tempfile' , -format => $output_format);
 			my $seqIn = $gb->get_Stream_by_acc($acc);
 			# write each entry in the input file to the output file 
