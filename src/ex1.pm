@@ -51,29 +51,42 @@ my $inseq = Bio::SeqIO->new(-file => $input_file, -format => 'genbank');
 my $input_basename = fileparse($input_file);
 (my $input_basename_extensionless = $input_basename) =~ s/\.[^.]+$//;
 
-while (my $seq = $inseq->next_seq()) {
-	my $_seq = $seq;
-	for my $direction (@directions) {
-		for (my $i = 0; $i < 3; $i++) {
-			my $read_seq_no = $i+1;
-			my $output_basename = "${input_basename_extensionless}-${direction}-${read_seq_no}.fas";
-			my $output_file = File::Spec->catfile(($output_dir), $output_basename);
-			my $outseq = Bio::SeqIO->new(-file => ">" . $output_file, -format => 'fasta');
-			$outseq->write_seq($seq->translate(undef, undef, $i)); 
+my $seq = $inseq->next_seq();
+my $max_seq_length = 0;
+my $most_probable_rf = shift;
+my $most_probable_rf_dir = "";
+my $most_probable_rf_index = 0;
+for my $direction (@directions) {
+	for (my $i = 0; $i < 3; $i++) {
+		my $read_seq_no = $i+1;
+		my $output_basename = "${input_basename_extensionless}-${direction}-${read_seq_no}.fas";
+		my $output_file = File::Spec->catfile($output_dir, $output_basename);
+		my $outseq = Bio::SeqIO->new(-file => ">" . $output_file, -format => 'fasta');
+		$outseq->write_seq($seq->translate(undef, undef, $i));
+		if ($seq->length > $max_seq_length) {
+			$max_seq_length = $seq->length;
+			$most_probable_rf = $seq->translate(undef, undef, $i);
+			$most_probable_rf_dir = $direction;
+			$most_probable_rf_index = $read_seq_no;
 		}
-		$_seq = $seq->revcom();
 	}
+	$seq = $seq->revcom();
 }
+
+my $output_basename = "${max_seq_length}_${input_basename_extensionless}-${most_probable_rf_dir}-${most_probable_rf_index}.fas";
+my $output_file = File::Spec->catfile($output_dir, $output_basename);
+my $outseq = Bio::SeqIO->new(-file => ">" . $output_file, -format => 'fasta');
+$outseq->write_seq($most_probable_rf);
 
 __END__
 
 =head1 NAME
 
-ex1.pl - Sequence processing
+ex1.pm - Sequence processing
 
 =head1 SYNOPSIS
 
-ex1.pl --input-file input_file.gb [--output-directory output_dir]
+ex1.pm --input-file input_file.gb [--output-directory output_dir]
 
   Options:
     --help               Brief help message
@@ -106,6 +119,6 @@ B<By default is the current working directory.>
 
 =head1 DESCRIPTION
 
-B<This program> will read the provided path in I<input_file>, fetching the file in Genbank format with a sequence of a gene and output the six reading frames into the output directory I<output_dir>.
+B<This program> will read the provided path in I<input_file>, fetching the file in Genbank format with a sequence of a gene and output the six reading frames into the output directory I<output_dir> in FASTA format.
 
 =cut 
