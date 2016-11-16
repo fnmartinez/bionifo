@@ -1,0 +1,44 @@
+########################################
+# Program: patmatmotifs
+# Rundate: Wed 16 Nov 2016 16:51:57
+# Commandline: patmatmotifs
+#    -sequence intermediate.orf
+#    -outfile output/ex4/report
+# Report_format: dbmotif
+# Report_file: output/ex4/report
+########################################
+
+#=======================================
+#
+# Sequence: 71215212-71225215_1     from: 1   to: 285
+# HitCount: 2
+#
+# Full: No
+# Prune: Yes
+# Data_file: /usr/share/EMBOSS/data/PROSITE/prosite.lines
+#
+#=======================================
+
+Length = 14
+Start = position 55 of sequence
+End = position 68 of sequence
+
+Motif = CONNEXINS_1
+
+KSSFICNTLQPGCNSVCYDQFFPI
+     |            |
+    55            68
+
+Length = 17
+Start = position 170 of sequence
+End = position 186 of sequence
+
+Motif = CONNEXINS_2
+
+VRLVKCDVYPCPNTVDCFVSRPTEKTV
+     |               |
+   170               186
+
+
+#---------------------------------------
+#---------------------------------------
